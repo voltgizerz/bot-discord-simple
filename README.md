@@ -2,7 +2,11 @@
 
 <p align="center">
   <img src="images/ss.png")><br>
-  Just For Fun Bot 
+  Just For Fun Bot<br>
+  <img src="images/Welcomer.png")><br>
+  AUTO WELCOMER MESSAGE
+  <img src="images/Goodbye.png")><br>
+  AUTO LEFT MESSAGE
 </p>
 
 ## Setup Bot
@@ -30,6 +34,7 @@
 - Make announcement (you need to insert your id text channel in bot.py).
 - Delete text message history.
 - Check your bot ping.
+- Auto Welcomer and Left Member Message In Server (you need to insert you discord id and text channel id where to announce it)
 
 ## Authors
 

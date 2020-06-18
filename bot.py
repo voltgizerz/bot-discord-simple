@@ -21,7 +21,9 @@ import psycopg2
 from discord.utils import get
 import requests
 import aiohttp
-
+from PIL import Image
+from PIL import ImageFont
+from PIL import ImageDraw, ImageOps
 
 bot = commands.Bot(command_prefix='b!', case_insensitive=True)
 bot.remove_command('help') 
@@ -399,6 +401,79 @@ async def status_task():
         await asyncio.sleep(300)
         await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="#BlackLiveMattters"))
         await asyncio.sleep(300)
+
+
+
+def image_process(member,status,number):
+    im = Image.open('./avatar/avatar.jpg')
+    im = im.resize((300, 300))
+    bigsize = (im.size[0] * 5, im.size[1] * 5)
+    mask = Image.new('L', bigsize, 0)
+    draw = ImageDraw.Draw(mask)
+    draw.ellipse((0, 0) + bigsize, fill='white', outline='white')
+    mask = mask.resize(im.size, Image.ANTIALIAS)
+    im.putalpha(mask)
+
+    output = ImageOps.fit(im, mask.size, centering=(0.5, 0.5))
+    output.putalpha(mask)
+    output.save('./avatar/output.png')
+
+    if status == 'join':
+        background = Image.open('./avatar/bg.png')
+    else:
+        background = Image.open('./avatar/bg-gb.png')
+
+    draw = ImageDraw.Draw(background)
+    font = ImageFont.truetype(r'./avatar/sans.ttf', 100)
+
+    if status == 'join':
+        draw.text((645, 80), "WELCOME", fill='white', font=font,)
+    else:
+        draw.text((645, 80), "GOODBYE", fill='white', font=font,)
+
+    draw = ImageDraw.Draw(background)
+    font = ImageFont.truetype(r'./avatar/sans.ttf', 65)
+    draw.text((645, 180), member, fill='white', font=font)
+
+    if status == 'join':
+        draw.text((645, 250), f"Guild Member - {number+1}", fill='white', font=font)
+    else:
+        draw.text((645, 250), f"See you Again :(", fill='white', font=font)
+    background.paste(im, (60, 80), im)
+    background.save('./avatar/overlap.png') #OUTPUT FILE TO UPLOAD
+    return True
+
+@bot.event
+async def on_member_join(member):
+    #if member.guild.id == (YOUR DISCORD ID HERE): (USE THIS ONLY, IF YOUR BOT IN MORE THAN 1 DISCORD GUILD)
+    print("Recognized that " + member.name + " joined")
+    Picture_request = requests.get(member.avatar_url)
+    if Picture_request.status_code == 200:
+        with open("./avatar/avatar.jpg", 'wb') as f:
+            f.write(Picture_request.content)
+    guild = bot.get_guild("INSERT YOUR GUILD ID HERE") #YOUR GUILD ID
+    if guild in bot.guilds:
+        members = guild.member_count
+        
+    image_process(member,'join',members)
+    channel = bot.get_channel("INSRERT YOUR WELCOME TEXT CHANNEL ID HERE") # WELCOME  TEXT CHANNEL ID
+    with open("./avatar/overlap.png", 'rb') as f: #OPEN FILE LOCATION
+        msg = (f"**SELAMAT DATANG {member.mention} DI DEVASTATE :zap:**\n\n- Silahkan membaca dan memahami <#562899314511446034> & <#562897998456291329> terlebih dahulu.\n- Jika sudah membaca dan memahami silahkan bergabung di voice channel Waiting Rooms.\n- Anda harus melakukan interview terlebih dahulu sebelum bergabung.\n\n<@&289742953440608256> atau <@&289743236203937793>  hanya akan melakukan interview player yang berada di voice channel Ruang Tunggu.")
+        await channel.send(file=discord.File(f),content=msg)
+
+@bot.event
+async def on_member_remove(member):
+    #if member.guild.id == (YOUR DISCORD ID HERE): (USE THIS ONLY, IF YOUR BOT IN MORE THAN 1 DISCORD GUILD)
+    print("Recognized that " + member.name + " left")
+    Picture_request = requests.get(member.avatar_url)
+    if Picture_request.status_code == 200:
+        with open("./avatar/avatar.jpg", 'wb') as f:
+            f.write(Picture_request.content)
+    image_process(member,'left',20)
+    channel = bot.get_channel("INSRERT YOUR GOODBYE TEXT CHANNEL ID HERE") # GOODBYE TEXT CHANNEL ID
+    with open("./avatar/overlap.png", 'rb') as f: #OPEN FILE LOCATION
+        msg = (f"**SELAMAT TINGGAL {member.mention} DARI DEVASTATE :zap:**\nKami segenap <@&289742953440608256> dan <@&289743236203937793> dan seluruh staff lainnya berterima kasih\nkepada anda sudah meluangkan waktu pada server kami, kami tetap menuggu kehadiran anda untuk kembali. ")
+        await channel.send(file=discord.File(f),content=msg)
 
 
 @bot.event
