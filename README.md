@@ -4,7 +4,7 @@
   <img src="images/ss.png")><br>
   Just For Fun Bot<br>
   <img src="images/Welcomer.png")><br>
-  AUTO WELCOMER MESSAGE
+  AUTO WELCOMER MESSAGE<br>
   <img src="images/Goodbye.png")><br>
   AUTO LEFT MESSAGE
 </p>
