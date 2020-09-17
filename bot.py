@@ -388,6 +388,28 @@ async def invitebot(ctx):
     p.manage_roles = True
     await ctx.send(oauth_url(bot.user.id, p))
 
+@bot.command(aliases=["among","au"])
+async def amongUS(ctx, *, code=""):
+    if ctx.author.voice and ctx.author.voice.channel:
+        channel = ctx.author.voice.channel
+        members = channel.members #finds members connected to the channel
+        if code=="" and code!="mute" and code!="unmute" and code!="m" and code!="un":
+            msg = f":crab: {ctx.message.author.mention} Wrong command Example **b!among mute** or **b!among unmute**"
+            await ctx.send(msg)
+        elif code=="mute" or code=="m": #MUTE
+            msg = f":mute: **{ctx.message.author.mention} muting all people's in voice channel!**"
+            await ctx.send(msg)
+            for member in members:
+                await member.edit(mute=True)
+        elif code=="unmute" or code=="un": #UNMUTE
+            msg = f":loud_sound: **{ctx.message.author.mention} unmuting all people's in voice channel!**"
+            await ctx.send(msg)
+            for member in members:
+                await member.edit(mute=False)
+    else:
+        msg = f":confused: **{ctx.message.author.mention} you are not in voice channel, you need to join voice channel to use this command!**"
+        await ctx.send(msg)
+
 
 async def status_task():
     while True:

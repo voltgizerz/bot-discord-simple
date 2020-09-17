@@ -35,6 +35,7 @@
 - Delete text message history.
 - Check your bot ping.
 - Auto Welcomer and Left Member Message In Server (you need to insert you discord id and text channel id where to announce it)
+- Auto mute all people in voice channel or unmute all people in voice channel (best for play AmongUs)
 
 ## Authors
 
