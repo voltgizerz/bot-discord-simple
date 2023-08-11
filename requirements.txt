@@ -4,6 +4,6 @@ requests==2.22.0
 async-timeout==3.0.1
 crayons==0.3.0
 imagehash==4.0
-aiohttp==3.7.4
+aiohttp==3.8.5
 gunicorn
 pillow
